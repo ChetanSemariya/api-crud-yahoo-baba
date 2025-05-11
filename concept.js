@@ -109,4 +109,87 @@ fetch(file/URL, {
   },
 });
 
+
+// ****************** API Security ****************** //
+
+Note:- API ko hacking se bachane se hum kuch techniques ka use krte hai 
+
+1). Form validation (express-validator)
+2). CSRF Token (csurf)
+3). Password Hashing (Bcrypt)
+4). JWT Authentication (jsonwebtoken)
+5). Rate Limiting
+6). Helmet
+
+***************************** HACKING ATTACKS ******************************
+
+BRUTE FORCE ATTACKS :- Isme hacker ke pass large number of data hota hai and vo baar baar login ka attempt krta hai alag-alag credentials se jisse humare server down hojaata haii.
+
+DDos Attack :- ISS attack mai hacker website ke kisi bhi page pr baar baar request krta hai jisse server crash hojata hai because server request handle nahi krpaata hai
+
+SOLUTION :- Rate Limiting iski help se hum kisi bhi system se rate limit laga skte hai with the help of IP address i.e ki iss ip address se only itni request hi valid hai and agar isse jyada hoto vo page dikhna band hojaaye and website hi open na ho
+
+iske liye humare pass expressjs mai ek package aata hai express-rate-limit iski help se hum time or request bhi set krskte hai and agar usse jyada request aati hai to server uss ip address ko block krdeta hai
+
+1). express-rate-limit
+2). express-slow-down => same work as rate limit but the difference is that agar rate limit jo bhi humne set kari hai usse jyada hai to yhh baki ki request ko block nahi krta hai usee queue mai daal deta hai i.e jese hi aaage hi req process ho uske baad hi queue vali req run ho
+
+
+***************** Steps to working with Rate Limiting *********************
+
+1). npm install express-rate-limit
+2). const rateLimit = require("express-rate-limit")
+3). const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000 // yaha pr hum time set krte hai (15 min)
+      max: 100, (kitni max request hum set krna chahte hai and agar isse jyada req aaye to webpage show hona band hojaaye)
+      message: "Too many requests form this IP, please try again later"
+})
+
+4). use rate limit as a middleware
+
+app.use(limiter)
+
+// ----------------- HACKING TECHNIQUES -------------------- //
+
+1). Cross-Site-Scripting(XSS) =  humare website ki css ya script ko hacker utha kr kahi or multiple jagah rakh dete hai jisse uss server pr load padta hai and server down hojaata hai
+2). Clickjacking = Isme hacker humare website ka koi page iframe ke andar khol lete hai and javascript ke code ki help se multiple click karate hai isi ko kahte hai clickJacking
+3). MIME-sniffing attacks :- Isme hacker humare response ke sath malfunctioning krta hai
+4). Information disclosure :- Isme hacker yhh pata krskta hai ki humari website kis technology mai bani hai
+
+Note :- Agar hum insbhi attacks se bachna chahte hai to uske liye humare pass security headers aate hai jisse hum humari website ko prevent krskte hai. Iske liye humare pass Express js mai ek package bhi aata hai jo bydefault sabhi security headers ko enable krdeta hai and disable bhi krskta hai
+
+SECURITY HEADERS :- 
+
+!). Content-Security-Policy
+2). Cross-Origin-Embedder-Policy
+3). Cross-Origin-Opener-Policy
+4). Cross-Origin-Resource-Policy
+5). Origin-Agent-Cluster
+6). Referrer-Policy
+7). Strict-Transport-Security
+8). X-Content-Type-Options
+9). X-DNS-Prefetch-Control
+10). X-Download-Options
+11). X-Frame-Options
+12). X-Permitted-Cross-Domain-Policies
+13). X-Powered-By
+14). X-XSS-Protection
+
+// *********************** STEPS to WORKING WITH Helmet Package ******************** //
+
+**** Helmet ka use only server side pr hi krna chahiye i.e in production bcz localsystem mai testing ke time problem aaskti hai
+
+1). npm install helmet
+2). const helmet = require("helmet");
+3). app.use(helmet()); // sabhi security headers enable hojayenge
+
+Note:- Agar hum kuch security headers ko band krna chahte hai to usee kuch iss tarah se krskte hai
+
+app.use(
+    helmet({
+      contentSecurityPolicy:false,
+      xDownloadOptions:false
+    })
+)
+
 */

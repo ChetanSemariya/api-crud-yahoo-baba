@@ -5,12 +5,21 @@ const UserRoutes = require('./routes/users.routes');
 const connectDB = require('./config/database');
 const auth = require('./middleware/auth');
 const { MulterError } = require('multer');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
 
 connectDB(); // jo bhi function ko hum export krenge databaseJs ki file se use yaha call krna compulsory hai
 
 const PORT = process.env.PORT;
+
+// ******** RATE LIMITING ************* //
+const limiter = rateLimit({
+    windowMs: 1000 * 60, // one min
+    max:4,
+    message:"Too many request from this IP, please try again later"
+});
 
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }))
@@ -20,11 +29,16 @@ app.use(express.json())
 
 app.use(cors()); // use cors as a middleware
 
+// app.use(helmet()); // only use on production server
+
+app.use(limiter); // rate limiting middleware
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // uploads file ka access dena chahte hai to uske liye hum static middleware ka use krenge and jab bhi user uploads folder ko search krega to root directory se use access mil jayga
 // routes
 app.use('/api/users', UserRoutes);
 
-app.use(auth);
+// *********** Implement Auth Middleware ******** //
+app.use(auth); 
 
 app.use('/api/students', StudentRoutes); // here StudentRoutes mai jitne bhi routes humne define kiye hai unsbse phle hume /api/students likhna padega jabhi vo route run honge
 
