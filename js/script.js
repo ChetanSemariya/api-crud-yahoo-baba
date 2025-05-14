@@ -53,8 +53,5 @@ if(loginForm){
         }else{
             alert(data.message || "Login failed!");
         }
-
-
     })
-
 }
